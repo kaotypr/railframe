@@ -3,8 +3,6 @@ import { RailframeBase } from './RailframeBase';
 import type { RailframeOptions } from './types';
 
 export class RailframeContainer extends RailframeBase {
-  protected loggerConfig = new LiblogConfig<'Railframe:Container'>({ error: true });
-  public readonly logger = createLiblog(this.loggerConfig, { scope: 'Railframe:Container' });
   private iframe: HTMLIFrameElement;
   private ready = false;
 
