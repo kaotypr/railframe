@@ -1,6 +1,7 @@
+import { RF_EMIT_PAYLOAD } from './constants/rf-emit-payload';
 import { RF_EMIT_TYPE } from './constants/rf-emit-type';
 import { RailframeBase } from './railframe-base';
-import type { RailframeOptions } from './types';
+import type { MessageHandler, RailframeOptions } from './types';
 
 export class RailframeContainer extends RailframeBase {
   private iframe: HTMLIFrameElement;
@@ -12,13 +13,17 @@ export class RailframeContainer extends RailframeBase {
     this.iframe = iframe;
     window.addEventListener('message', this.handleMessage);
 
-    this.on(RF_EMIT_TYPE.READY, () => {
+    this.on(RF_EMIT_TYPE.READY, this.onIframeReady);
+  }
+
+  private onIframeReady: MessageHandler<typeof RF_EMIT_PAYLOAD.READY> = (payload) => {
+    if (payload?.from === RF_EMIT_PAYLOAD.READY.from) {
       this.ready = true;
       // DEBUG
       this.logger.debug('Iframe ready');
       this.processQueue();
-    });
-  }
+    }
+  };
 
   private processQueue() {
     this.messageQueue.forEach(({ type, payload }) => {
@@ -27,7 +32,7 @@ export class RailframeContainer extends RailframeBase {
     this.messageQueue = [];
   }
 
-  emit(type: string, payload: any) {
+  emit(type: string, payload?: any) {
     if (!this.ready && type !== 'ready') {
       // DEBUG
       this.logger.debug('Iframe is not ready');

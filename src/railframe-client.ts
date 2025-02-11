@@ -8,10 +8,10 @@ export class RailframeClient extends RailframeBase {
     super({ ...options, scope: 'client' });
     window.addEventListener('message', this.handleMessage);
 
-    this.emit(RF_EMIT_TYPE.READY, RF_EMIT_PAYLOAD.ready);
+    this.emit(RF_EMIT_TYPE.READY, RF_EMIT_PAYLOAD.READY);
   }
 
-  emit(type: string, payload: any) {
+  emit(type: string, payload?: any) {
     if (window.parent !== window) {
       window.parent.postMessage({ type, payload }, this.targetOrigin);
       // DEBUG

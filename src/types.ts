@@ -11,6 +11,7 @@ export interface RailframeBaseOptions {
   targetOrigin?: string;
   scope: RailframeScope;
   debug?: boolean;
+  delimiter?: string; // for namespace separation
 }
 
 export interface RailframeOptions extends Omit<RailframeBaseOptions, 'scope'> {}

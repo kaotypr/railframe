@@ -1,3 +1,3 @@
 export const RF_EMIT_PAYLOAD = {
-  ready: { from: 'client' },
+  READY: { from: 'railframe__client' },
 };

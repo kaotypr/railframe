@@ -4,6 +4,7 @@ import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from './t
 export class RailframeBase {
   protected handlers: Map<string, Set<MessageHandler>>;
   protected targetOrigin: string;
+  protected delimiter: string;
   protected loggerConfig = new LiblogConfig<'Railframe:Client' | 'Railframe:Container'>({
     warning: true,
     error: true,
@@ -16,6 +17,16 @@ export class RailframeBase {
     this.handleMessage = this.handleMessage.bind(this);
     this.logger = createLiblog(this.loggerConfig, { scope: options.scope });
     if (options?.debug) this.logger.config.set({ verbose: true });
+    this.delimiter = options.delimiter || ':';
+  }
+
+  protected matchNamespace(pattern: string, type: string): boolean {
+    const patternParts = pattern.split(this.delimiter);
+    const typeParts = type.split(this.delimiter);
+
+    if (patternParts.length !== typeParts.length) return false;
+
+    return patternParts.every((part, index) => part === '*' || part === typeParts[index]);
   }
 
   protected handleMessage(event: MessageEvent) {
@@ -26,13 +37,13 @@ export class RailframeBase {
     }
 
     const message = event.data as RailframeMessage;
-    if (!message || !message.type) {
-      return;
-    }
+    if (!message || !message.type) return;
 
-    const handlers = this.handlers.get(message.type);
-    if (handlers) {
-      handlers.forEach((handler) => handler(message.payload));
+    // Find all matching handlers including wildcards
+    for (const [pattern, handlers] of this.handlers.entries()) {
+      if (this.matchNamespace(pattern, message.type)) {
+        handlers.forEach((handler) => handler(message.payload));
+      }
     }
   }
 
