@@ -1,18 +1,35 @@
+import { createLiblog, LiblogConfig } from '@kaotypr/liblog';
 import { RailframeBase } from './RailframeBase';
 import type { RailframeOptions } from './types';
 
 export class RailframeContainer extends RailframeBase {
+  protected loggerConfig = new LiblogConfig<'Railframe:Container'>({ error: true });
+  public readonly logger = createLiblog(this.loggerConfig, { scope: 'Railframe:Container' });
   private iframe: HTMLIFrameElement;
+  private ready = false;
 
   constructor(iframe: HTMLIFrameElement, options?: RailframeOptions) {
-    super(options);
+    super({ ...options, scope: 'Railframe:Container' });
     this.iframe = iframe;
     window.addEventListener('message', this.handleMessage);
+
+    this.on('ready', () => {
+      this.ready = true;
+      this.logger.debug('Iframe ready');
+    });
   }
 
   emit(type: string, payload: any) {
+    if (!this.ready && type !== 'ready') {
+      this.logger.debug('Iframe not ready, message queued');
+      setTimeout(() => this.emit(type, payload), 100);
+      return;
+    }
+
     if (this.iframe.contentWindow) {
       this.iframe.contentWindow.postMessage({ type, payload }, this.targetOrigin);
+      this.logger.debug('emit', type);
+      this.logger.debug('emit payload:', payload);
     }
   }
 

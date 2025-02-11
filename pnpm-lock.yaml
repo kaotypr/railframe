@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@kaotypr/liblog':
+        specifier: ^1.1.3
+        version: 1.1.3
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -73,6 +77,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@kaotypr/liblog@1.1.3':
+    resolution: {integrity: sha512-UB/+tB/JMnyzznhEsIa2z9YPbxxlbbpWCPkFXi8CqUQsY74xY2y8HN9h50D68GvptVf37LUUwn16E/gOHSLZmw==}
+
   '@types/node@22.13.1':
     resolution: {integrity: sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==}
 
@@ -120,6 +127,8 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
+
+  '@kaotypr/liblog@1.1.3': {}
 
   '@types/node@22.13.1':
     dependencies:

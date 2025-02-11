@@ -1,10 +1,16 @@
-export type MessageHandler = (data: any) => void;
+export type MessageHandler<T = any> = (data: T) => void;
 
-export interface RailframeMessage {
+export interface RailframeMessage<T = any> {
   type: string;
-  payload: any;
+  payload: T;
 }
 
-export interface RailframeOptions {
-  targetOrigin: string;
+export type RailframeScope = 'Railframe:Client' | 'Railframe:Container';
+
+export interface RailframeBaseOptions {
+  targetOrigin?: string;
+  scope: RailframeScope;
+  debug?: boolean;
 }
+
+export interface RailframeOptions extends Omit<RailframeBaseOptions, 'scope'> {}

@@ -1,19 +1,27 @@
-import type { MessageHandler, RailframeMessage, RailframeOptions } from './types';
+import { createLiblog, LiblogConfig } from '@kaotypr/liblog';
+import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from './types';
 
 export class RailframeBase {
   protected handlers: Map<string, Set<MessageHandler>>;
   protected targetOrigin: string;
+  protected loggerConfig = new LiblogConfig<'Railframe:Client' | 'Railframe:Container'>({
+    warning: true,
+    error: true,
+  });
+  public readonly logger: ReturnType<typeof createLiblog>;
 
-  constructor(options: RailframeOptions = { targetOrigin: '*' }) {
+  constructor(options: RailframeBaseOptions) {
     this.handlers = new Map();
-    this.targetOrigin = options.targetOrigin;
+    this.targetOrigin = options.targetOrigin || '*';
     this.handleMessage = this.handleMessage.bind(this);
+    this.logger = createLiblog(this.loggerConfig, { scope: options.scope });
+    if (options?.debug) this.logger.config.set({ verbose: true });
   }
 
   protected handleMessage(event: MessageEvent) {
     // Add origin check
     if (this.targetOrigin !== '*' && event.origin !== this.targetOrigin) {
-      console.warn(`Message from unauthorized origin: ${event.origin}`);
+      this.logger.warn(`Message from unauthorized origin: ${event.origin}`);
       return;
     }
 
@@ -33,12 +41,14 @@ export class RailframeBase {
       this.handlers.set(type, new Set());
     }
     this.handlers.get(type)?.add(handler);
+    this.logger.debug(`on ${type} handler added`);
   }
 
   off(type: string, handler: MessageHandler) {
     const handlers = this.handlers.get(type);
     if (handlers) {
       handlers.delete(handler);
+      this.logger.debug(`on ${type} handler removed`);
       if (handlers.size === 0) {
         this.handlers.delete(type);
       }
