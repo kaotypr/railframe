@@ -1,6 +1,6 @@
 # Railframe
 
-A lightweight, type-safe iframe communication library for React applications.
+A JavaScript library that handles bidirectional communication between container (parent) and iframe (client) applications using the postMessage API. It provides a simple interface for sending and receiving messages across different origins with built-in ready state handling and event namespacing.
 
 ## Features
 
