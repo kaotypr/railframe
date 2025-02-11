@@ -1,7 +1,7 @@
-import { RF_EMIT_PAYLOAD } from './constants/rf-emit-payload';
-import { RF_EMIT_TYPE } from './constants/rf-emit-type';
+import { RF_EMIT_PAYLOAD } from '../constants/rf-emit-payload';
+import { RF_EMIT_TYPE } from '../constants/rf-emit-type';
 import { RailframeBase } from './railframe-base';
-import type { MessageHandler, RailframeOptions } from './types';
+import type { MessageHandler, RailframeOptions } from '../types';
 
 export class RailframeContainer extends RailframeBase {
   private iframe: HTMLIFrameElement;

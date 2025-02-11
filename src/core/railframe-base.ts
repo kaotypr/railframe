@@ -1,5 +1,5 @@
 import { createLiblog, LiblogConfig } from '@kaotypr/liblog';
-import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from './types';
+import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from '../types';
 
 export class RailframeBase {
   protected handlers: Map<string, Set<MessageHandler>>;
