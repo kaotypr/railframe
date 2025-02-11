@@ -5,7 +5,7 @@ export interface RailframeMessage<T = any> {
   payload: T;
 }
 
-export type RailframeScope = 'Railframe:Client' | 'Railframe:Container';
+export type RailframeScope = 'client' | 'container';
 
 export interface RailframeBaseOptions {
   targetOrigin?: string;

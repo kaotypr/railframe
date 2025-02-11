@@ -1,3 +1,3 @@
-export { RailframeContainer } from './RailframeContainer';
-export { RailframeClient } from './RailframeClient';
+export { RailframeContainer } from './railframe-container';
+export { RailframeClient } from './railframe-client';
 export type { RailframeOptions, RailframeMessage, MessageHandler } from './types';

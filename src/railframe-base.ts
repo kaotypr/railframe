@@ -41,6 +41,7 @@ export class RailframeBase {
       this.handlers.set(type, new Set());
     }
     this.handlers.get(type)?.add(handler);
+    // DEBUG
     this.logger.debug(`on ${type} handler added`);
   }
 
@@ -48,6 +49,7 @@ export class RailframeBase {
     const handlers = this.handlers.get(type);
     if (handlers) {
       handlers.delete(handler);
+      // DEBUG
       this.logger.debug(`on ${type} handler removed`);
       if (handlers.size === 0) {
         this.handlers.delete(type);

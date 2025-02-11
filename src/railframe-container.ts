@@ -1,36 +1,55 @@
-import { RailframeBase } from './RailframeBase';
+import { RF_EMIT_TYPE } from './constants/rf-emit-type';
+import { RailframeBase } from './railframe-base';
 import type { RailframeOptions } from './types';
 
 export class RailframeContainer extends RailframeBase {
   private iframe: HTMLIFrameElement;
   private ready = false;
+  private messageQueue: Array<{ type: string; payload: any }> = [];
 
   constructor(iframe: HTMLIFrameElement, options?: RailframeOptions) {
-    super({ ...options, scope: 'Railframe:Container' });
+    super({ ...options, scope: 'container' });
     this.iframe = iframe;
     window.addEventListener('message', this.handleMessage);
 
-    this.on('ready', () => {
+    this.on(RF_EMIT_TYPE.READY, () => {
       this.ready = true;
+      // DEBUG
       this.logger.debug('Iframe ready');
+      this.processQueue();
     });
+  }
+
+  private processQueue() {
+    this.messageQueue.forEach(({ type, payload }) => {
+      this.emit(type, payload);
+    });
+    this.messageQueue = [];
   }
 
   emit(type: string, payload: any) {
     if (!this.ready && type !== 'ready') {
-      this.logger.debug('Iframe not ready, message queued');
-      setTimeout(() => this.emit(type, payload), 100);
+      // DEBUG
+      this.logger.debug('Iframe is not ready');
+      if (!this.messageQueue.find((m) => m.type === type)) {
+        this.messageQueue.push({ type, payload });
+        // DEBUG
+        this.logger.debug(`Message ${type} queued`);
+      }
       return;
     }
 
     if (this.iframe.contentWindow) {
       this.iframe.contentWindow.postMessage({ type, payload }, this.targetOrigin);
+      // DEBUG
       this.logger.debug('emit', type);
       this.logger.debug('emit payload:', payload);
     }
   }
 
   destroy() {
+    // DEBUG
+    this.logger.debug('destroy container handlers');
     window.removeEventListener('message', this.handleMessage);
     this.handlers.clear();
   }
