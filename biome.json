@@ -1,5 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.4.1/schema.json",
+  "files": {
+    "include": ["src/**/*.{ts,tsx}"]
+  },
   "organizeImports": {
     "enabled": true
   },
