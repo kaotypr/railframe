@@ -1,6 +1,6 @@
 {
   "name": "railframe",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,15 +18,22 @@
     "prepare": "npm run build && lefthook install",
     "format": "biome format --write .",
     "lint": "biome lint .",
-    "check": "biome check --apply ."
+    "check": "biome check --apply .",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
     "@types/node": "^22.13.1",
     "lefthook": "^1.10.10",
+    "standard-version": "^9.5.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
