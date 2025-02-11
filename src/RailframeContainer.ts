@@ -1,4 +1,3 @@
-import { createLiblog, LiblogConfig } from '@kaotypr/liblog';
 import { RailframeBase } from './RailframeBase';
 import type { RailframeOptions } from './types';
 
