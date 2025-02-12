@@ -7,7 +7,7 @@ A JavaScript library that handles bidirectional communication between container 
 - 🎯 Event namespacing support
 - 🚦 Ready state handling
 - 🐛 Configurable debug mode with detailed logging
-- 🔍 Origin validation
+- 🔍 Origin validation (support multiple origins)
 
 ## Installation
 
