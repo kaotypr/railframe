@@ -8,7 +8,7 @@ export interface RailframeMessage<T = any> {
 export type RailframeScope = 'client' | 'container'
 
 export interface RailframeBaseOptions {
-  targetOrigin?: string
+  targetOrigin?: string | string[]
   scope: RailframeScope
   debug?: boolean
   delimiter?: string // for namespace separation

@@ -1,7 +1,7 @@
 import { RF_EMIT_PAYLOAD } from '../constants/rf-emit-payload'
 import { RF_EMIT_TYPE } from '../constants/rf-emit-type'
-import { RailframeBase } from './railframe-base'
 import type { RailframeOptions } from '../types'
+import { RailframeBase } from './railframe-base'
 
 export class RailframeClient extends RailframeBase {
   constructor(options?: RailframeOptions) {
@@ -13,7 +13,10 @@ export class RailframeClient extends RailframeBase {
 
   emit(type: string, payload?: any) {
     if (window.parent !== window) {
-      window.parent.postMessage({ type, payload }, this.targetOrigin)
+      // Send to all allowed origins
+      this.targetOrigins.forEach((origin) => {
+        window.parent.postMessage({ type, payload }, origin)
+      })
       // DEBUG
       this.logger.debug('emit', type)
       this.logger.debug('emit payload:', payload)

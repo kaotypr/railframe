@@ -1,9 +1,9 @@
-import { createLiblog, LiblogConfig } from '@kaotypr/liblog'
+import { LiblogConfig, createLiblog } from '@kaotypr/liblog'
 import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from '../types'
 
 export class RailframeBase {
   protected handlers: Map<string, Set<MessageHandler>>
-  protected targetOrigin: string
+  protected targetOrigins: string[]
   protected delimiter: string
   protected loggerConfig = new LiblogConfig<'Railframe:Client' | 'Railframe:Container'>({
     warning: true,
@@ -13,7 +13,11 @@ export class RailframeBase {
 
   constructor(options: RailframeBaseOptions) {
     this.handlers = new Map()
-    this.targetOrigin = options.targetOrigin || '*'
+    this.targetOrigins = options.targetOrigin
+      ? Array.isArray(options.targetOrigin)
+        ? options.targetOrigin
+        : [options.targetOrigin]
+      : ['*']
     this.handleMessage = this.handleMessage.bind(this)
     this.logger = createLiblog(this.loggerConfig, { scope: options.scope })
     if (options?.debug) this.logger.config.set({ verbose: true })
@@ -30,8 +34,8 @@ export class RailframeBase {
   }
 
   protected handleMessage(event: MessageEvent) {
-    // Add origin check
-    if (this.targetOrigin !== '*' && event.origin !== this.targetOrigin) {
+    // Target origins check
+    if (!this.targetOrigins.includes('*') && !this.targetOrigins.includes(event.origin)) {
       this.logger.warn(`Message from unauthorized origin: ${event.origin}`)
       return
     }

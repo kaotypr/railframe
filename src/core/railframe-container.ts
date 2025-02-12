@@ -1,7 +1,7 @@
 import { RF_EMIT_PAYLOAD } from '../constants/rf-emit-payload'
 import { RF_EMIT_TYPE } from '../constants/rf-emit-type'
-import { RailframeBase } from './railframe-base'
 import type { MessageHandler, RailframeOptions } from '../types'
+import { RailframeBase } from './railframe-base'
 
 export class RailframeContainer extends RailframeBase {
   private iframe: HTMLIFrameElement
@@ -45,8 +45,11 @@ export class RailframeContainer extends RailframeBase {
     }
 
     if (this.iframe.contentWindow) {
-      this.iframe.contentWindow.postMessage({ type, payload }, this.targetOrigin)
-      // DEBUG
+      // Send to all allowed origins
+      this.targetOrigins.forEach((origin) => {
+        this.iframe.contentWindow?.postMessage({ type, payload }, origin)
+      })
+      // Debug
       this.logger.debug('emit', type)
       this.logger.debug('emit payload:', payload)
     }
