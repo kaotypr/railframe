@@ -1,4 +1,4 @@
-export type MessageHandler<T = any> = (data: T) => void
+export type MessageHandler<T = any> = (payload: T) => void
 
 export interface RailframeMessage<T = any> {
   type: string

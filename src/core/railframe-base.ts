@@ -1,11 +1,14 @@
 import { LiblogConfig, createLiblog } from '@kaotypr/liblog'
 import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from '../types'
 
+/**
+ * Base class for Railframe client and container
+ */
 export class RailframeBase {
   protected handlers: Map<string, Set<MessageHandler>>
   protected targetOrigins: string[]
   protected delimiter: string
-  protected loggerConfig = new LiblogConfig<'Railframe:Client' | 'Railframe:Container'>({
+  protected loggerConfig = new LiblogConfig<'client' | 'container'>({
     warning: true,
     error: true,
   })
@@ -51,23 +54,38 @@ export class RailframeBase {
     }
   }
 
+  /**
+   * Listen for message
+   * @param type message type
+   * @param handler callback function to be called when the message type is emitted
+   */
   on(type: string, handler: MessageHandler) {
     if (!this.handlers.has(type)) {
       this.handlers.set(type, new Set())
     }
     this.handlers.get(type)?.add(handler)
-    // DEBUG
+    // Debug
     this.logger.debug(`on ${type} handler added`)
   }
 
-  off(type: string, handler: MessageHandler) {
+  /**
+   * Remove message listener
+   * @param type message type
+   * @param handler optional specific handler to be removed, if not provided, all handlers for the message type will be removed
+   */
+  off(type: string, handler?: MessageHandler) {
     const handlers = this.handlers.get(type)
     if (handlers) {
-      handlers.delete(handler)
-      // DEBUG
-      this.logger.debug(`on ${type} handler removed`)
-      if (handlers.size === 0) {
+      if (handler) {
+        // Remove specific handler
+        handlers.delete(handler)
+        // Debug
+        this.logger.debug(`on ${type} specific handler removed`)
+      } else {
+        // Remove all handlers for this type
         this.handlers.delete(type)
+        // Debug
+        this.logger.debug(`on ${type} all handlers removed`)
       }
     }
   }
