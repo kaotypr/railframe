@@ -2,12 +2,16 @@
 
 A JavaScript library that handles bidirectional communication between container (parent) and iframe (client) applications using the postMessage API. It provides a simple interface for sending and receiving messages across different origins with built-in ready state handling and event namespacing.
 
+> 💡 Railframe simplifies cross-origin communication between parent windows and iframes with type-safe messaging and built-in state management.
+
 ## Features
 
 - 🎯 Event namespacing support
 - 🚦 Ready state handling
 - 🐛 Configurable debug mode with detailed logging
 - 🔍 Origin validation (support multiple origins)
+
+> ⚠️ When using multiple target origins, make sure to properly validate and whitelist allowed origins for security.
 
 ## Installation
 
@@ -21,7 +25,7 @@ pnpm add railframe
 
 ## Basic Usage
 
-### In Container (Parent) App
+### RailframeContainer - In parent app
 
 ```typescript
 import { RailframeContainer } from 'railframe';
@@ -40,7 +44,7 @@ container.on('form:submit', (data) => {
 container.emit('update:data', { value: 42 });
 ```
 
-### In Iframe App
+### RailframeClient - In iframe app
 
 ```typescript
 import { RailframeClient } from 'railframe';
@@ -57,6 +61,32 @@ client.on('update:data', (data) => {
 
 // Send message to parent
 client.emit('form:submit', formData);
+```
+
+### RailframeGlobal - Works in both parent and iframe
+RailframeGlobal is a class that combines both client and container functionality, allowing direct communication between parent window and iframes without managing ready states.
+
+> 🔔 Unlike RailframeContainer, RailframeGlobal doesn't manage iframe ready states. Messages are sent immediately without queueing.
+
+```typescript
+import { RailframeClient } from 'railframe';
+
+// Initialize
+const global = new RailframeGlobal(options?)
+
+// Listen for messages
+global.on('message:type', (payload) => {
+  console.log(payload)
+})
+
+// Send message to parent window
+global.emitToContainer('message:type', payload)
+
+// Send message to specific iframe
+global.emitToClient(iframeElement, 'message:type', payload)
+
+// Clean up
+global.destroy()
 ```
 
 ## Event Namespacing
@@ -80,37 +110,68 @@ container.on('form:submit', (data) => {
 ### RailframeContainer
 
 ```typescript
-interface RailframeOptions {
-  targetOrigin?: string
-  debug?: boolean
-  delimiter?: string // for namespace separation
-}
-
 new RailframeContainer(iframe: HTMLIFrameElement, options?: RailframeOptions)
 ```
 
-Options:
+#### Parameters:
 
-- targetOrigin : Target origin for postMessage
-- debug : Enable debug logging
-- delimiter : Namespace delimiter (default: ':')
+- iframe: `HTMLIFrameElement`
+Iframe element to communicate with
+- options:
+  - targetOrigin: `string | string[]`
+  Target origin for postMessage
+  - debug: `boolean`
+  Enable debug logging
+  - delimiter: `string`
+  Namespace delimiter (default: `:`)
 
-Methods:
+#### Methods:
 
-- on(type: string, handler: MessageHandler) : Add event listener
-- off(type: string, handler: MessageHandler) : Remove event listener
-- emit(type: string, payload?: any) : Send message to iframe
-- destroy() : Cleanup listeners
+- on: Add event listener
+`(type: string, handler: MessageHandler) => void`
+- off: Remove event listener, if handler is not provided, all handlers for the event will be removed
+`(type: string, handler?: MessageHandler) => void` 
+- emit: Send message to iframe
+`(type: string, payload?: any) => void`
+- destroy: Cleanup listeners
+`() => void`
 
-RailframeClient
+### RailframeClient
 
 ```typescript
 new RailframeClient(options?: RailframeOptions)
 ```
 
-Options: Same as RailframeContainer
+#### Parameters:
 
-Methods: Same as RailframeContainer
+> Same as RailframeContainer options argument
+
+#### Methods:
+
+> Same as RailframeContainer methods
+
+### RailframeGlobal
+
+```typescript
+new RailframeGlobal(options?: RailframeOptions)
+```
+
+#### Parameters:
+
+> Same as RailframeContainer options argument
+
+#### Methods:
+
+- on: Add event listener
+`(type: string, handler: MessageHandler) => void`
+- off: Remove event listener, if handler is not provided, all handlers for the event will be removed
+`(type: string, handler?: MessageHandler) => void` 
+- emitToClient: Send message to iframe
+`(iframe: HTMLIframeElement, type: string, payload?: any) => void`
+- emitToContainer: Send message to parent window
+`(type: string, payload?: any) => void`
+- destroy: Cleanup listeners
+`() => void`
 
 ## Development
 
