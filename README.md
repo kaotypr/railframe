@@ -115,26 +115,37 @@ new RailframeContainer(iframe: HTMLIFrameElement, options?: RailframeOptions)
 
 #### Parameters:
 
-- iframe: `HTMLIFrameElement`
-Iframe element to communicate with
-- options:
-  - targetOrigin: `string | string[]`
-  Target origin for postMessage
-  - debug: `boolean`
-  Enable debug logging
-  - delimiter: `string`
-  Namespace delimiter (default: `:`)
+- **iframe**: Iframe element to communicate with
+- **options**:
+  - **targetOrigin**: Target origin for postMessage
+  - **debug**: Enable debug logging
+  - **delimiter**: Namespace delimiter (default: `:`)
+
+```typescript
+[
+    HTMLIFrameElement,
+    {
+        targetOrigin: string | string[]
+        debug: boolean
+    }
+]
+```
 
 #### Methods:
 
-- on: Add event listener
-`(type: string, handler: MessageHandler) => void`
-- off: Remove event listener, if handler is not provided, all handlers for the event will be removed
-`(type: string, handler?: MessageHandler) => void` 
-- emit: Send message to iframe
-`(type: string, payload?: any) => void`
-- destroy: Cleanup listeners
-`() => void`
+- **on**: Add event listener
+- **off**: Remove event listener, if handler is not provided, all handlers for the event will be removed
+- **emit**: Send message to iframe
+- **destroy**: Cleanup listeners
+
+```typescript
+{
+    on: (type: string, handler: MessageHandler) => void
+    off: (type: string, handler?: MessageHandler) => void
+    emit: (type: string, payload?: any) => void
+    destroy: () => void
+}
+```
 
 ### RailframeClient
 
@@ -162,16 +173,21 @@ new RailframeGlobal(options?: RailframeOptions)
 
 #### Methods:
 
-- on: Add event listener
-`(type: string, handler: MessageHandler) => void`
-- off: Remove event listener, if handler is not provided, all handlers for the event will be removed
-`(type: string, handler?: MessageHandler) => void` 
-- emitToClient: Send message to iframe
-`(iframe: HTMLIframeElement, type: string, payload?: any) => void`
-- emitToContainer: Send message to parent window
-`(type: string, payload?: any) => void`
-- destroy: Cleanup listeners
-`() => void`
+- **on**: Add event listener
+- **off**: Remove event listener, if handler is not provided, all handlers for the event will be removed
+- **emitToClient**: Send message to iframe
+- **emitToContainer**: Send message to parent window
+- **destroy**: Cleanup listeners
+
+```typescript
+{
+    on: (type: string, handler: MessageHandler) => void
+    off: (type: string, handler?: MessageHandler) => void
+    emitToClient: (iframe: HTMLIframeElement, type: string, payload?: any) => void
+    emitToContainer: (type: string, payload?: any) => void
+    destroy: () => void
+}
+```
 
 ## Development
 
