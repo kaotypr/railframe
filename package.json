@@ -25,9 +25,14 @@
     "release:patch": "standard-version --release-as patch",
     "release:major": "standard-version --release-as major"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["railframe", "iframe", "postmessage", "postmessage-api"],
+  "author": "Adhitya Yosua Sanjaya Andaria",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaotypr/railframe.git"
+  },
+  "homepage": "https://github.com/kaotypr/railframe#readme",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^19.7.1",
