@@ -1,4 +1,4 @@
-import { LiblogConfig, createLiblog } from '@kaotypr/liblog'
+import { Logger } from '@kaotypr/ll'
 import type { MessageHandler, RailframeBaseOptions, RailframeMessage } from '../types'
 
 /**
@@ -8,11 +8,7 @@ export class RailframeBase {
   protected handlers: Map<string, Set<MessageHandler>>
   protected targetOrigins: string[]
   protected delimiter: string
-  protected loggerConfig = new LiblogConfig<'client' | 'container'>({
-    warning: true,
-    error: true,
-  })
-  public readonly logger: ReturnType<typeof createLiblog>
+  public readonly logger: Logger
 
   constructor(options: RailframeBaseOptions) {
     this.handlers = new Map()
@@ -22,8 +18,7 @@ export class RailframeBase {
         : [options.targetOrigin]
       : ['*']
     this.handleMessage = this.handleMessage.bind(this)
-    this.logger = createLiblog(this.loggerConfig, { scope: options.scope })
-    if (options?.debug) this.logger.config.set({ verbose: true })
+    this.logger = new Logger({ enabled: options.debug, prefix: `[${options.scope}]` })
     this.delimiter = options.delimiter || ':'
   }
 
